@@ -17,14 +17,11 @@
 #  along with Pyrogram.  If not, see <http://www.gnu.org/licenses/>.
 
 from .get_account_ttl import GetAccountTTL
-from .get_privacy import GetPrivacy
 from .set_account_ttl import SetAccountTTL
-from .set_privacy import SetPrivacy
+
 
 class Account(
     GetAccountTTL,
-    GetPrivacy,
-    SetAccountTTL,
-    SetPrivacy
+    SetAccountTTL
 ):
     pass

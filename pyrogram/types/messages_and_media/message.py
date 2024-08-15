@@ -143,9 +143,6 @@ class Message(Object, Update):
             This field will contain the enumeration type of the media message.
             You can use ``media = getattr(message, message.media.value)`` to access the media message.
 
-        paid_media (:obj:`~pyrogram.types.PaidMediaInfo`, *optional*):
-            The message is a paid media message.
-
         show_above_text (``bool``, *optional*):
             If True, link preview will be shown above the message text.
             Otherwise, the link preview will be shown below the message text.
@@ -440,7 +437,6 @@ class Message(Object, Update):
         scheduled: bool = None,
         from_scheduled: bool = None,
         media: "enums.MessageMediaType" = None,
-        paid_media: "types.PaidMediaInfo" = None,
         show_above_text: bool = None,
         edit_date: datetime = None,
         edit_hidden: bool = None,
@@ -549,7 +545,6 @@ class Message(Object, Update):
         self.scheduled = scheduled
         self.from_scheduled = from_scheduled
         self.media = media
-        self.paid_media = paid_media
         self.show_above_text = show_above_text
         self.edit_date = edit_date
         self.edit_hidden = edit_hidden
@@ -923,7 +918,6 @@ class Message(Object, Update):
             web_page = None
             poll = None
             dice = None
-            paid_media = None
 
             media = message.media
             media_type = None
@@ -1026,9 +1020,6 @@ class Message(Object, Update):
                 elif isinstance(media, raw.types.MessageMediaDice):
                     dice = types.Dice._parse(client, media)
                     media_type = enums.MessageMediaType.DICE
-                elif isinstance(media, raw.types.MessageMediaPaidMedia):
-                    paid_media = types.PaidMediaInfo._parse(client, media)
-                    media_type = enums.MessageMediaType.PAID_MEDIA
                 else:
                     media = None
 
@@ -1092,7 +1083,6 @@ class Message(Object, Update):
                 scheduled=is_scheduled,
                 from_scheduled=message.from_scheduled,
                 media=media_type,
-                paid_media=paid_media,
                 show_above_text=getattr(message, "invert_media", None),
                 edit_date=utils.timestamp_to_datetime(message.edit_date),
                 edit_hidden=message.edit_hide,
@@ -4944,31 +4934,6 @@ class Message(Object, Update):
             RPCError: In case of a Telegram RPC error.
         """
         return await self._client.view_messages(
-            chat_id=self.chat.id,
-            message_id=self.id
-        )
-
-    async def pay(self) -> bool:
-        """Bound method *pay* of :obj:`~pyrogram.types.Message`.
-
-        Use as a shortcut for:
-
-        .. code-block:: python
-
-            await client.send_payment_form(
-                chat_id=message.chat.id,
-                message_id=message_id
-            )
-
-        Example:
-            .. code-block:: python
-
-                await message.pay()
-
-        Returns:
-            True on success.
-        """
-        return await self._client.send_payment_form(
             chat_id=self.chat.id,
             message_id=self.id
         )

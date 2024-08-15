@@ -80,6 +80,3 @@ class MessageMediaType(AutoName):
 
     INVOICE = auto()
     "Invoice media"
-
-    PAID_MEDIA = auto()
-    "Paid media"

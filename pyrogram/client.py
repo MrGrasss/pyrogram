@@ -1,21 +1,3 @@
-#  Pyrogram - Telegram MTProto API Client Library for Python
-#  Copyright (C) 2017-present Dan <https://github.com/delivrance>
-#
-#  This file is part of Pyrogram.
-#
-#  Pyrogram is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Lesser General Public License as published
-#  by the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Pyrogram is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public License
-#  along with Pyrogram.  If not, see <http://www.gnu.org/licenses/>.
-
 import asyncio
 import functools
 import inspect
@@ -210,13 +192,8 @@ class Client(Methods):
             For now, only the tz_offset field is supported, for specifying timezone offset in seconds.
     """
 
-    APP_VERSION = f"Pyrogram {__version__}"
-    DEVICE_MODEL = f"{platform.python_implementation()} {platform.python_version()}"
-    SYSTEM_VERSION = f"{platform.system()} {platform.release()}"
-
-    LANG_PACK = ""
     LANG_CODE = "en"
-    SYSTEM_LANG_CODE = "en"
+    SYSTEM_LANG_CODE = "en-US"
 
     PARENT_DIR = Path(sys.argv[0]).parent
 
@@ -236,12 +213,12 @@ class Client(Methods):
     def __init__(
         self,
         name: str,
-        api_id: Optional[Union[int, str]] = None,
-        api_hash: Optional[str] = None,
-        app_version: str = APP_VERSION,
-        device_model: str = DEVICE_MODEL,
-        system_version: str = SYSTEM_VERSION,
-        lang_pack: str = LANG_PACK,
+        api_id: Union[int, str] = None,
+        api_hash: str = None,
+        app_version: str = None,
+        device_model: str = None,
+        system_version: str = None,
+        lang_pack: str = None,
         lang_code: str = LANG_CODE,
         system_lang_code: str = SYSTEM_LANG_CODE,
         ipv6: Optional[bool] = False,
@@ -280,7 +257,7 @@ class Client(Methods):
         self.system_version = system_version
         self.lang_pack = lang_pack.lower()
         self.lang_code = lang_code.lower()
-        self.system_lang_code = system_lang_code.lower()
+        self.system_lang_code = system_lang_code
         self.ipv6 = ipv6
         self.proxy = proxy
         self.test_mode = test_mode
@@ -391,11 +368,6 @@ class Client(Methods):
     async def authorize(self) -> User:
         if self.bot_token:
             return await self.sign_in_bot(self.bot_token)
-
-        print(f"Welcome to Pyrogram (version {__version__})")
-        print(f"Pyrogram is free software and comes with ABSOLUTELY NO WARRANTY. Licensed\n"
-              f"under the terms of the {__license__}.\n")
-
         while True:
             try:
                 if not self.phone_number:

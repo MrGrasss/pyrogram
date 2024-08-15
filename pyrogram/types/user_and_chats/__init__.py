@@ -43,7 +43,6 @@ from .folder import Folder
 from .found_contacts import FoundContacts
 from .group_call_member import GroupCallMember
 from .invite_link_importer import InviteLinkImporter
-from .privacy_rule import PrivacyRule
 from .restriction import Restriction
 from .user import User
 from .username import Username
@@ -72,7 +71,6 @@ __all__ = [
     "ChatEventFilter",
     "ChatInviteLink",
     "InviteLinkImporter",
-    "PrivacyRule",
     "ChatAdminWithInviteLinks",
     "ChatColor",
     "VideoChatStarted",

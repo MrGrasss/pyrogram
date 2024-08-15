@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with Pyrogram.  If not, see <http://www.gnu.org/licenses/>.
 
-from typing import AsyncGenerator, Optional
+from typing import AsyncGenerator
 
 import pyrogram
 from pyrogram import types, raw, utils
@@ -25,9 +25,7 @@ from pyrogram import types, raw, utils
 class GetDialogs:
     async def get_dialogs(
         self: "pyrogram.Client",
-        limit: int = 0,
-        exclude_pinned: Optional[bool] = None,
-        from_archive: Optional[bool] = None
+        limit: int = 0
     ) -> AsyncGenerator["types.Dialog", None]:
         """Get a user's dialogs sequentially.
 
@@ -38,12 +36,6 @@ class GetDialogs:
                 Limits the number of dialogs to be retrieved.
                 By default, no limit is applied and all dialogs are returned.
 
-            exclude_pinned (``bool``, *optional*):
-                Exclude pinned dialogs.
-
-            from_archive (``bool``, *optional*):
-                Pass True to get dialogs from archive.
-
         Returns:
             ``Generator``: A generator yielding :obj:`~pyrogram.types.Dialog` objects.
 
@@ -52,10 +44,6 @@ class GetDialogs:
 
                 # Iterate through all dialogs
                 async for dialog in app.get_dialogs():
-                    print(dialog.chat.first_name or dialog.chat.title)
-
-                # Iterate through dialogs from archive
-                async for dialog in app.get_dialogs(from_archive=True):
                     print(dialog.chat.first_name or dialog.chat.title)
         """
         current = 0
@@ -73,9 +61,7 @@ class GetDialogs:
                     offset_id=offset_id,
                     offset_peer=offset_peer,
                     limit=limit,
-                    hash=0,
-                    exclude_pinned=exclude_pinned,
-                    folder_id=None if from_archive is None else 1 if from_archive else 0
+                    hash=0
                 ),
                 sleep_threshold=60
             )

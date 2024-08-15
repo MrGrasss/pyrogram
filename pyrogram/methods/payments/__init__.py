@@ -17,12 +17,8 @@
 #  along with Pyrogram.  If not, see <http://www.gnu.org/licenses/>.
 
 from .check_giftcode import CheckGiftCode
-from .get_payment_form import GetPaymentForm
-from .send_payment_form import SendPaymentForm
 
 class Payments(
-    CheckGiftCode,
-    GetPaymentForm,
-    SendPaymentForm
+    CheckGiftCode
 ):
     pass

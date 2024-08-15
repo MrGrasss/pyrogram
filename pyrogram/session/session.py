@@ -29,7 +29,8 @@ from pyrogram import raw
 from pyrogram.connection import Connection
 from pyrogram.crypto import mtproto
 from pyrogram.errors import (
-    RPCError, InternalServerError, AuthKeyDuplicated, FloodWait, FloodPremiumWait, ServiceUnavailable, BadMsgNotification,
+    RPCError, InternalServerError, AuthKeyDuplicated, FloodWait, FloodPremiumWait, ServiceUnavailable,
+    BadMsgNotification,
     SecurityCheckMismatch, Unauthorized
 )
 from pyrogram.raw.all import layer
@@ -37,6 +38,11 @@ from pyrogram.raw.core import TLObject, MsgContainer, Int, FutureSalts
 from .internals import MsgId, MsgFactory
 
 log = logging.getLogger(__name__)
+
+
+class ConnectionFailedError(Exception):
+    """Custom exception for connection failures after multiple attempts."""
+    pass
 
 
 class Result:
@@ -101,7 +107,10 @@ class Session:
         self.loop = asyncio.get_event_loop()
 
     async def start(self):
-        while True:
+        retry_limit = 3
+        attempt = 0
+
+        while attempt < retry_limit:
             self.connection = self.client.connection_factory(
                 dc_id=self.dc_id,
                 test_mode=self.test_mode,
@@ -142,19 +151,25 @@ class Session:
                 log.info("Session initialized: Layer %s", layer)
                 log.info("Device: %s - %s", self.client.device_model, self.client.app_version)
                 log.info("System: %s (%s)", self.client.system_version, self.client.lang_code)
+
+                # If we successfully connect, exit the retry loop
+                break
             except AuthKeyDuplicated as e:
                 await self.stop()
                 raise e
             except (OSError, RPCError):
                 await self.stop()
+                attempt += 1
+                log.warning("Connection failed, retrying... (Attempt %d/%d)", attempt, retry_limit)
             except Exception as e:
                 await self.stop()
                 raise e
-            else:
-                break
+        else:
+            log.error("Failed to start session after %d attempts", retry_limit)
+            await self.stop()
+            raise ConnectionFailedError(f"Failed to start session after {retry_limit} attempts")
 
         self.is_started.set()
-
         log.info("Session started")
 
     async def stop(self):

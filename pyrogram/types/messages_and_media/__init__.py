@@ -42,9 +42,6 @@ from .message import Message
 from .message_entity import MessageEntity
 from .message_reactions import MessageReactions
 from .my_boost import MyBoost
-from .paid_media_info import PaidMediaInfo
-from .paid_media_preview import PaidMediaPreview
-from .payment_form import PaymentForm
 from .photo import Photo
 from .poll import Poll
 from .poll_option import PollOption
@@ -88,9 +85,6 @@ __all__ = [
     "MessageEntity",
     "MessageReactions",
     "MyBoost",
-    "PaidMediaInfo",
-    "PaidMediaPreview",
-    "PaymentForm",
     "Photo",
     "Poll",
     "PollOption",

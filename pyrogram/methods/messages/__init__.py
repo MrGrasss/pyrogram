@@ -18,7 +18,6 @@
 
 from .copy_media_group import CopyMediaGroup
 from .copy_message import CopyMessage
-from .delete_chat_history import DeleteChatHistory
 from .delete_messages import DeleteMessages
 from .download_media import DownloadMedia
 from .edit_inline_caption import EditInlineCaption
@@ -61,7 +60,6 @@ from .send_document import SendDocument
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
-from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
 from .send_reaction import SendReaction
@@ -98,7 +96,6 @@ class Messages(
     SendLocation,
     SendMediaGroup,
     SendMessage,
-    SendPaidMedia,
     SendPhoto,
     SendSticker,
     SendVenue,
@@ -127,7 +124,6 @@ class Messages(
     SearchMessages,
     SearchGlobal,
     CopyMessage,
-    DeleteChatHistory,
     CopyMediaGroup,
     SearchMessagesCount,
     SearchPosts,
