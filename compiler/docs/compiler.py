@@ -206,6 +206,7 @@ def pyrogram_api():
             update_color
             delete_chat_history
             send_paid_media
+            send_paid_reaction
         """,
         chats="""
         Chats
@@ -231,7 +232,6 @@ def pyrogram_api():
             get_dialogs
             get_dialogs_count
             set_chat_username
-            get_nearby_chats
             archive_chats
             unarchive_chats
             add_chat_members
@@ -320,6 +320,7 @@ def pyrogram_api():
         """,
         payments="""
         Payments
+            apply_gift_code
             check_gift_code
             get_payment_form
             send_payment_form
@@ -354,6 +355,9 @@ def pyrogram_api():
             get_chat_menu_button
             answer_web_app_query
             answer_pre_checkout_query
+            answer_shipping_query
+            create_invoice_link
+            refund_star_payment
         """,
         business="""
         Business
@@ -532,6 +536,7 @@ def pyrogram_api():
             PaidMediaInfo
             PaidMediaPreview
             PaymentForm
+            ChatBoost
         """,
         bot_keyboards="""
         Bot keyboards
@@ -559,6 +564,12 @@ def pyrogram_api():
             OrderInfo
             PreCheckoutQuery
             ShippingAddress
+            ShippingQuery
+            MessageReactionUpdated
+            MessageReactionCountUpdated
+            ChatBoostUpdated
+            ShippingOption
+            PurchasedPaidMedia
         """,
         bot_commands="""
         Bot commands
@@ -748,6 +759,10 @@ def pyrogram_api():
         PreCheckoutQuery
             PreCheckoutQuery.answer
         """,
+        shipping_query="""
+        ShippingQuery
+            ShippingQuery.answer
+        """,
         chat_join_request="""
         ChatJoinRequest
             ChatJoinRequest.approve
@@ -819,6 +834,78 @@ def pyrogram_api():
 
                     f2.write(title + "\n" + "=" * len(title) + "\n\n")
                     f2.write(".. automethod:: pyrogram.types.{}()".format(bm))
+
+        f.write(template.format(**fmt_keys))
+
+
+    # Enumerations
+
+    categories = dict(
+        enums="""
+        Enumerations
+            BusinessSchedule
+            ChatAction
+            ChatEventAction
+            ChatMemberStatus
+            ChatMembersFilter
+            ChatType
+            ClientPlatform
+            FolderColor
+            MessageEntityType
+            MessageServiceType
+            MessagesFilter
+            NextCodeType
+            ParseMode
+            PollType
+            PrivacyKey
+            ProfileColor
+            ReplyColor
+            SentCodeType
+            StoriesPrivacyRules
+            UserStatus
+        """,
+    )
+
+    root = PYROGRAM_API_DEST + "/enums"
+
+    shutil.rmtree(root, ignore_errors=True)
+    os.mkdir(root)
+
+    with open(HOME + "/template/enums.rst") as f:
+        template = f.read()
+
+    with open(root + "/cleanup.html", "w") as f:
+        f.write("""<script>
+  document
+    .querySelectorAll("em.property")
+    .forEach((elem, i) => i !== 0 ? elem.remove() : true)
+
+  document
+    .querySelectorAll("a.headerlink")
+    .forEach((elem, i) => [0, 1].includes(i) ? true : elem.remove())
+</script>""")
+
+    with open(root + "/index.rst", "w") as f:
+        fmt_keys = {}
+
+        for k, v in categories.items():
+            name, *enums = get_title_list(v)
+
+            fmt_keys.update({"{}_hlist".format(k): "\n    ".join("{}".format(enum) for enum in enums)})
+
+            fmt_keys.update(
+                {"{}_toctree".format(k): "\n    ".join("{}".format(enum) for enum in enums)})
+
+            # noinspection PyShadowingBuiltins
+            for enum in enums:
+                with open(root + "/{}.rst".format(enum), "w") as f2:
+                    title = "{}".format(enum)
+
+                    f2.write(title + "\n" + "=" * len(title) + "\n\n")
+                    f2.write(".. autoclass:: pyrogram.enums.{}()".format(enum))
+                    f2.write("\n    :members:\n")
+
+                    f2.write("\n.. raw:: html\n    :file: ./cleanup.html\n")
 
         f.write(template.format(**fmt_keys))
 

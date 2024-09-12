@@ -77,10 +77,7 @@ class GetDialogs:
 
                 chat_id = utils.get_peer_id(message.peer_id)
 
-                try:
-                    messages[chat_id] = await types.Message._parse(self, message, users, chats)
-                except KeyError:
-                    pass
+                messages[chat_id] = await types.Message._parse(self, message, users, chats)
 
             dialogs = []
 
@@ -88,10 +85,7 @@ class GetDialogs:
                 if not isinstance(dialog, raw.types.Dialog):
                     continue
 
-                try:
-                    dialogs.append(types.Dialog._parse(self, dialog, messages, users, chats))
-                except KeyError:
-                    pass
+                dialogs.append(types.Dialog._parse(self, dialog, messages, users, chats))
 
             if not dialogs:
                 return
